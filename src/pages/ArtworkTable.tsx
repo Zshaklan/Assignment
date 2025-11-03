@@ -19,6 +19,7 @@ interface Artwork {
 export default function ArtworkTable() {
   const [artworks, setArtworks] = useState<Artwork[]>([]);
   const [page, setPage] = useState(1);
+  const [totalRecords, setTotalRecords] = useState<number>(0);
   const [selectedRows, setSelectedRows] = useState<Record<number, Artwork>>({});
   const [rowInput, setRowInput] = useState<string>("");
   const [pendingSelectionCount, setPendingSelectionCount] = useState<number>(0);
@@ -55,6 +56,7 @@ export default function ArtworkTable() {
           `https://api.artic.edu/api/v1/artworks?page=${page}`
         );
         setArtworks(res.data.data);
+        setTotalRecords(res.data.pagination.total);
       } catch (error) {
         console.error("Failed to fetch artworks", error);
       }
@@ -171,6 +173,7 @@ export default function ArtworkTable() {
           paginator
           rows={ROWS_PER_PAGE}
           selection={currentPageSelection}
+          totalRecords={totalRecords}
           onSelectionChange={handleSelectionChange}
           first={(page - 1) * ROWS_PER_PAGE}
           onPage={(e) => setPage(Math.floor(e.first / e.rows) + 1)}
